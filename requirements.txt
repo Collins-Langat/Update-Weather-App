@@ -1,0 +1,9 @@
+dash
+dash-bootstrap-components
+plotly
+pandas
+requests
+scikit-learn
+xgboost
+joblib
+gunicorn
