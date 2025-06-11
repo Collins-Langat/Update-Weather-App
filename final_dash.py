@@ -11,6 +11,8 @@
 
 
 # ------------------- IMPORTS -------------------
+# ------------------- IMPORTS -------------------
+import os
 import requests
 import pandas as pd
 from dash import Dash, html, dcc
@@ -20,11 +22,11 @@ from dash.dependencies import Input, Output, State
 import joblib
 from datetime import datetime
 
-
 # ------------------- LOAD MODEL -------------------
-xgb_model = joblib.load('rain_predictor_xgb.pkl')
+MODEL_PATH = os.path.join(os.path.dirname(__file__), 'rain_predictor_xgb.pkl')
+xgb_model = joblib.load(MODEL_PATH)
 if xgb_model is None:
-    raise ValueError("Failed to load the XGBoost model. Check the file path.")
+    raise ValueError("Model failed to load. Confirm the path or file integrity.")
 
 # ------------------- FETCH WEATHER DATA -------------------
 def fetch_weather_data(latitude, longitude):
@@ -62,10 +64,10 @@ df = fetch_weather_data(initial_lat, initial_lon)
 
 # ------------------- DASH APP -------------------
 app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
+server = app.server  # Expose for gunicorn
 app.title = "Rainfall Prediction Dashboard"
 
 app.layout = dbc.Container([
-
     dbc.Row([
         dbc.Col(html.Img(src='/assets/logo.jpeg', style={
             'height': '80px',
@@ -74,7 +76,7 @@ app.layout = dbc.Container([
             'paddingBottom': '10px'
         }))
     ]),
-
+    
     dbc.Row([dbc.Col(html.H1("Rainfall Prediction Dashboard", style={'textAlign': 'center', 'color': '#FFFFFF'}))]),
 
     dbc.Row([
@@ -183,8 +185,8 @@ def update_dashboard(n_clicks, selected_variable, num_days, lat, lon):
 
     return fig, table, new_max, new_marks
 
-# ------------------- RUN APP -------------------
+# ------------------- LOCAL DEV -------------------
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000)
+    app.run_server(debug=True, host='0.0.0.0', port=10000)
 
 
