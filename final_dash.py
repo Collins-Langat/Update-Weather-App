@@ -22,7 +22,7 @@ from datetime import datetime
 
 
 # ------------------- LOAD MODEL -------------------
-xgb_model = joblib.load(r'C:\Users\colli\Desktop\stuff\rain_predictor_xgb.pkl')
+xgb_model = joblib.load('rain_predictor_xgb.pkl')
 if xgb_model is None:
     raise ValueError("Failed to load the XGBoost model. Check the file path.")
 
